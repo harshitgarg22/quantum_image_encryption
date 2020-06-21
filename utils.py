@@ -71,11 +71,11 @@ def neqr(image):
                 if ele == "1":
                     qc.cx(ancillary, qb)
 
-    return (grayscale_qubits, pixel_qubits)
+    return (grayscale_qubits, pixel_qubits_height, pixel_qubits_width)
 
 
-def scramble(neqr_image: (QuantumRegister, QuantumRegister)):
-    (grayscale_qubits, pixel_qubits) = neqr_image
+def scramble(neqr_image: (QuantumRegister, QuantumRegister, QuantumRegister)):
+    (grayscale_qubits, pixel_qubits_height, pixel_qubits_width) = neqr_image
     n = grayscale_qubits.size
     qc = QuantumCircuit(grayscale_qubits)
 
@@ -87,13 +87,17 @@ def scramble(neqr_image: (QuantumRegister, QuantumRegister)):
 
     run_circuit(qc)
 
-    return (grayscale_qubits, pixel_qubits)
+    return (grayscale_qubits, pixel_qubits_height, pixel_qubits_width)
 
 
 def cnot(
-    quantum_image: (QuantumRegister, QuantumRegister), quantum_key: QuantumRegister
+    quantum_image: (QuantumRegister, QuantumRegister, QuantumRegister),
+    quantum_key: QuantumRegister,
 ):
-    ((image_grayscale_qubits, pixel_qubits), key_grayscale_qubits) = (
+    (
+        (image_grayscale_qubits, pixel_qubits_height, pixel_qubits_width),
+        key_grayscale_qubits,
+    ) = (
         quantum_image,
         quantum_key,
     )
@@ -104,7 +108,10 @@ def cnot(
 
     run_circuit(qc)
 
-    return ((image_grayscale_qubits, pixel_qubits), key_grayscale_qubits)
+    return (
+        (image_grayscale_qubits, pixel_qubits_height, pixel_qubits_width),
+        key_grayscale_qubits,
+    )
 
 
 def generate_key():
@@ -116,8 +123,10 @@ def generate_key():
     return (knot, psi)
 
 
-def inverse_scramble(scrambled_image: (QuantumRegister, QuantumRegister)):
-    (grayscale_qubits, pixel_qubits) = scrambled_image
+def inverse_scramble(
+    scrambled_image: (QuantumRegister, QuantumRegister, QuantumRegister)
+):
+    (grayscale_qubits, pixel_qubits_height, pixel_qubits_width) = scrambled_image
     n = grayscale_qubits.size
     qc = QuantumCircuit(grayscale_qubits)
 
@@ -129,7 +138,7 @@ def inverse_scramble(scrambled_image: (QuantumRegister, QuantumRegister)):
 
     run_circuit(qc)
 
-    return (grayscale_qubits, pixel_qubits)
+    return (grayscale_qubits, pixel_qubits_height, pixel_qubits_width)
 
 
 def quantum_to_pillow(quantum_image):
