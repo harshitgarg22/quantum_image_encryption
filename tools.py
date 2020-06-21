@@ -1,6 +1,5 @@
 from utils import (
     logistic_sine_map,
-    controlled_image,
     neqr,
     scramble,
     cnot,
@@ -11,7 +10,6 @@ from utils import (
 
 def generate_quantum_key(key):
     quantum_key = logistic_sine_map(key=key)
-    quantum_key = controlled_image(quantum_key)
     quantum_key = neqr(quantum_key)
 
     return quantum_key
