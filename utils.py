@@ -6,7 +6,7 @@ This module defines utility functions to be used for encryption, decryption, and
 import random
 from PIL import Image
 from qiskit import QuantumCircuit, QuantumRegister
-from qiskit.circuit import ControlledGate
+from qiskit.circuit.library import XGate
 from math import log2, floor
 
 
@@ -53,18 +53,10 @@ def neqr(image):
         for j in range(WIDTH):
             ancillary = QuantumRegister(1)
             grayscale_binary = format(data[i][j], "0{}b".format(GRAYSCALE_SIZE))
-            pixel_height_binary = format(i, "0{}b".format(HEIGHT_QUBITS))
-            pixel_width_binary = format(j, "0{}b".format(WIDTH_QUBITS))
+            binary_height = format(i, "0{}b".format(HEIGHT_QUBITS))
+            binary_width = format(j, "0{}b".format(WIDTH_QUBITS))
 
-            ControlledGate(
-                name="control_pixel",
-                num_qubits=1,
-                num_ctrl_qubits=HEIGHT_QUBITS + WIDTH_QUBITS,
-                params=[],
-                ctrl_state=pixel_height_binary + pixel_width_binary,
-            )
-
-            qc.control_pixel()
+            qc.append(XGate.control(num_ctrl_qubits=(WIDTH_QUBITS + HEIGHT_QUBITS), ctrl_state=binary_height + binary_width), pixel_qubits_height + pixel_qubits_width + ancillary)
 
             # Now we have to implement the encoding of the grayscale data in the respective qubits
             for qb, ele in zip(grayscale_qubits, grayscale_binary):
