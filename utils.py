@@ -5,7 +5,7 @@ This module defines utility functions to be used for encryption, decryption, and
 
 import random
 from PIL import Image
-from qiskit import QuantumCircuit, QuantumRegister
+from qiskit import QuantumCircuit, QuantumRegister, Aer, execute
 from qiskit.circuit.library import XGate
 from math import log2, floor
 
@@ -56,7 +56,13 @@ def neqr(image):
             binary_height = format(i, "0{}b".format(HEIGHT_QUBITS))
             binary_width = format(j, "0{}b".format(WIDTH_QUBITS))
 
-            qc.append(XGate.control(num_ctrl_qubits=(WIDTH_QUBITS + HEIGHT_QUBITS), ctrl_state=binary_height + binary_width), pixel_qubits_height + pixel_qubits_width + ancillary)
+            qc.append(
+                XGate.control(
+                    num_ctrl_qubits=(WIDTH_QUBITS + HEIGHT_QUBITS),
+                    ctrl_state=binary_height + binary_width,
+                ),
+                pixel_qubits_height + pixel_qubits_width + ancillary,
+            )
 
             # Now we have to implement the encoding of the grayscale data in the respective qubits
             for qb, ele in zip(grayscale_qubits, grayscale_binary):
@@ -138,4 +144,7 @@ def quantum_to_pillow(quantum_image):
 
 
 def run_circuit(qc: QuantumCircuit):
-    pass
+    # Simulate locally on classical computer
+    simulator_qasm = Aer.get_backend("qasm_simulator")
+    job = execute(qc, simulator_qasm, shots=1024)
+    print("QASM Job status: " + str(job.status()))
