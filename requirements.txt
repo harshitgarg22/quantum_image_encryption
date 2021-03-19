@@ -29,7 +29,7 @@ ntlm-auth==1.5.0
 numpy==1.18.5
 pandas==1.0.4
 pathspec==0.8.0
-Pillow==7.1.2
+Pillow==8.1.1
 ply==3.11
 psutil==5.7.0
 pybind11==2.5.0
